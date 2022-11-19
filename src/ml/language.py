@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional, List, Dict
 
 from ftlangdetect import detect
 from googletrans import Translator
@@ -53,10 +53,11 @@ def polish_text_to_embeddings(text: str) -> list[float]:
     return x.tolist()[0]
 
 
-def score_scam_potential(text: str, scam_labels: List[str] = None) -> List[float]:
+def score_scam_potential(text: str, scam_labels: List[str] = None) -> Dict[str, float]:
     """
     Assess scam potential for given text.
     """
     if scam_labels is None:
         scam_labels = list(DEFAULT_SCAM_LABELS)
-    return classifier(text, scam_labels)[SCORES]
+    results = classifier(text, scam_labels)
+    return dict(zip(results['labels'], results['scores']))
