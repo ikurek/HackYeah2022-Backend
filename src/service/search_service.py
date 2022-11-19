@@ -1,10 +1,12 @@
-from typing import List
-from src.model.post import Post
-from src.database import db_engine
+from datetime import datetime
+from sklearn.metrics.pairwise import cosine_similarity
 from sqlalchemy import select, func
 from sqlalchemy.orm import Session
+from typing import List
+
+from src.database import db_engine
+from src.model.post import Post
 from src.service.post_service import get_all_posts
-from datetime import datetime
 
 
 def find_posts(
@@ -37,9 +39,13 @@ def get_posts_with_keyword(keyword: str, from_date: datetime, to_date: datetime)
 
 def get_posts_with_smart_search(smart_search_query: str, from_date: datetime, to_date: datetime) -> List[Post]:
     with Session(db_engine) as session:
-        print(f'Searching by smart search')
-        # TODO: KAMIL
-        return list()
+        posts = get_all_posts(from_date, to_date)
+        smart_search_embeddings = np.array(polish_text_to_embeddings(smart_search_query))
+        embeddings = np.array([post.tweet_embeddings for post in posts])
+        similarities = cosine_similarity(smart_search_embeddings, embeddings)
+        posts_with_similarities = zip(posts, similarities[0])
+        sorted_posts_with_similarities = sorted(posts_with_similarities, key=lambda tup: tup[1])
+        return [post[0] for post in sorted_posts_with_similarities]
 
 
 def get_posts_with_author_username(author_username: str, from_date: datetime, to_date: datetime) -> List[Post]:
