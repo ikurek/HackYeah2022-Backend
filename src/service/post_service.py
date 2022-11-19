@@ -3,11 +3,12 @@ from src.model.post import Post
 from src.database import db_engine
 from sqlalchemy import select
 from sqlalchemy.orm import Session
+from datetime import datetime
 
 
-def get_all_posts() -> List[Post]:
+def get_all_posts(from_date: datetime, to_date: datetime) -> List[Post]:
     with Session(db_engine) as session:
-        statement = select(Post)
+        statement = select(Post).filter(Post.tweet_date.between(from_date, to_date))
         result = list(session.scalars(statement))
         return result
 
