@@ -1,16 +1,20 @@
 import datetime
 
-import json
+import os
 from flask import Flask, request
 from src.database import init_db
-from src.service import post_service
-from src.service import search_service
+from src.service import post_service, search_service, image_service
 from src.model.post import Post, PostSchema
+from src.model.score import Score, ScoreSchema
 from datetime import datetime
+from werkzeug.utils import secure_filename
+
+ALLOWED_IMAGE_FILE_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 init_db()
 app = Flask(__name__)
 post_schema = PostSchema()
+score_schema = ScoreSchema()
 
 
 @app.route('/setup')
@@ -55,3 +59,20 @@ def search():
         to_date=datetime.fromisoformat(args.get('to_date', datetime.max.isoformat()))
     )
     return post_schema.dump(posts, many=True)
+
+
+@app.route('/imagescore', methods=['POST'])
+def upload_file():
+    if 'file' not in request.files:
+        return "File not found", 400
+    file = request.files['file']
+    if file.filename == '':
+        return "Filename not found", 400
+    if file and allowed_image_file(file.filename):
+        score = image_service.score_image_file(file)
+        return score_schema.dump(score)
+
+
+def allowed_image_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_IMAGE_FILE_EXTENSIONS

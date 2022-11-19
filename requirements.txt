@@ -1,3 +1,5 @@
 flask == 2.2.2
 sqlalchemy==2.0.0b3
 marshmallow-sqlalchemy == 0.28.1
+Werkzeug == 2.2.2
+marshmallow == 3.19.0
