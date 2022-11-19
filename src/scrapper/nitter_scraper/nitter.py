@@ -12,9 +12,9 @@ from jinja2 import Environment, FileSystemLoader
 from loguru import logger
 from pydantic import BaseModel as Base
 
-from nitter_scraper.paths import PROJECT_ROOT, TEMPLATES_DIRECTORY  # noqa: I202, I100
-from nitter_scraper.profile import get_profile  # noqa: I202, I100
-from nitter_scraper.tweets import get_tweets, get_tweets_using_query, get_replies_for_tweet  # noqa: I202, I100
+from .paths import PROJECT_ROOT, TEMPLATES_DIRECTORY  # noqa: I202, I100
+from .profile import get_profile  # noqa: I202, I100
+from .tweets import get_tweets, get_tweets_using_query, get_replies_for_tweet  # noqa: I202, I100
 
 
 class DockerBase(Base):

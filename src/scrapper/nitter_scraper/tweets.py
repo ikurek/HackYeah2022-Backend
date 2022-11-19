@@ -5,7 +5,7 @@ from typing import Dict, Optional, Callable
 
 from requests_html import HTMLSession
 
-from nitter_scraper.schema import Tweet  # noqa: I100, I202
+from .schema import Tweet  # noqa: I100, I202
 
 import time
 

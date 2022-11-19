@@ -2,7 +2,7 @@ from typing import Dict, Optional
 
 from requests_html import HTML, HTMLSession
 
-from nitter_scraper.schema import Profile  # noqa: I100, I202
+from .schema import Profile  # noqa: I100, I202
 
 
 def username_cleaner(username: str) -> str:
