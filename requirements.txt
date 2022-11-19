@@ -1,2 +1,11 @@
 flask == 2.2.2
 flask-sqlalchemy == 3.0.2
+# nitter scrapper
+requests-html~=0.10.0
+pydantic~=1.6.1
+pendulum~=2.1.2
+loguru~=0.5.1
+docker~=4.3.1
+jinja2~=2.11.2
+markupsafe==2.0.1
+tweepy
