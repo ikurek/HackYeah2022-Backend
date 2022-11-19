@@ -1,15 +1,12 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+from src.model.base import Base
 
-engine = create_engine('sqlite:///test.db')
-db_session = scoped_session(sessionmaker(autocommit=False,
-                                         autoflush=False,
-                                         bind=engine))
-Base = declarative_base()
-Base.query = db_session.query_property()
+db_engine = create_engine('sqlite:///local.db', echo=True, future=True)
 
 
 def init_db():
+    print("DB init")
     import src.model.post
-    Base.metadata.create_all(bind=engine)
+    Base.metadata.create_all(db_engine)
