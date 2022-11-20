@@ -15,7 +15,6 @@ LANGUAGE_REVERSE_MAPPER = {
     PL: EN,
     EN: PL
 }
-DEFAULT_SCAM_LABELS = ['scam']
 MIN_LANGUAGE_DETECTION_CONFIDENCE = 0.75
 
 sbert = AutoModel.from_pretrained("Voicelab/sbert-large-cased-pl")
