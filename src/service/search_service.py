@@ -38,25 +38,31 @@ def get_author_ranking(from_date: datetime, to_date: datetime) -> List[Influence
         result = list(session.scalars(statement))
 
         authors = {}
-        authors_sums = {}
+        authors_social_sums = {}
+        authors_fraud_sums = {}
         authors_counts = {}
         for post in result:
             author_id = post.tweet_author_id
             if author_id not in authors:
-                authors[author_id] = Influencer(post.tweet_author_id, post.tweet_author_username, post.tweet_author_display_name, 0.0)
-            if author_id in authors_sums:
-                authors_sums[author_id] += post.social_score or 0.0
+                authors[author_id] = Influencer(post.tweet_author_id, post.tweet_author_username, post.tweet_author_display_name, 0.0, 0.0)
+            if author_id in authors_social_sums:
+                authors_social_sums[author_id] += post.social_score or 0.0
             else:
-                authors_sums[author_id] = post.social_score or 0.0
+                authors_social_sums[author_id] = post.social_score or 0.0
+            if author_id in authors_fraud_sums:
+                authors_fraud_sums[author_id] += post.fraud_score or 0.0
+            else:
+                authors_fraud_sums[author_id] = post.fraud_score or 0.0
             if author_id in authors_counts:
                 authors_counts[author_id] += 1
             else:
                 authors_counts[author_id] = 1
         
         for id, author in authors.items():
-            author.score = authors_sums[id] / authors_counts[id]
+            author.social_score = authors_social_sums[id] / authors_counts[id]
+            author.fraud_score = authors_fraud_sums[id] / authors_counts[id]
         
-        sorted_authors = sorted(authors.values(), key=lambda a: a.score, reverse=True)
+        sorted_authors = sorted(authors.values(), key=lambda a: a.social_score, reverse=True)
 
         return sorted_authors
 

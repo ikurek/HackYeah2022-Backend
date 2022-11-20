@@ -10,8 +10,8 @@ def map_twitter_api_tweets(dicts) -> List[Post]:
         try:
             post = Post(
                 d["author_id"],
-                d["author"]["username"],
-                d["author"]["name"],
+                str(d["author"]["username"]),
+                str(d["author"]["name"]),
                 d["author"]["verified"],
                 d["created_at"],
                 str(d["text"]),
