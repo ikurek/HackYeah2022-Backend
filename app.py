@@ -2,13 +2,14 @@ import datetime
 
 import os
 from flask import Flask, request
-from flask_cors import CORS
 from src.database import init_db
 from src.service import post_service, search_service, image_service, aggregation_service
 from src.model.post import Post, PostSchema
 from src.model.score import Score, ScoreSchema
 from datetime import datetime
 from werkzeug.utils import secure_filename
+
+from typing import Optional
 
 ALLOWED_IMAGE_FILE_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
@@ -73,9 +74,19 @@ def search():
     return post_schema.dump(posts, many=True)
 
 
-@app.route('/sync')
-def sync_tweets():
-    aggregation_service.start_aggregation_task_async()
+@app.route('/sync', defaults={'count': None})
+@app.route('/sync/<count>')
+def sync_tweets(count: Optional[int]):
+    num_tweets = 100 if count is None else int(count)
+    aggregation_service.start_aggregation_task_async(num_tweets)
+    return ""
+
+
+@app.route('/review/<post_id>')
+def manual_review(post_id: int):
+    def update_block(post):
+        post.manually_reviewed = True
+    post_service.update_post(post_id, update_block)
     return ""
 
 

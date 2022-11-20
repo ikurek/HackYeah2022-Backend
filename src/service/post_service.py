@@ -5,7 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 from datetime import datetime
 
-from typing import List, Optional
+from typing import List, Optional, Callable
 
 def get_all_posts(from_date: datetime, to_date: datetime) -> List[Post]:
     with Session(db_engine) as session:
@@ -26,6 +26,17 @@ def get_latest_post(lang: str) -> Optional[Post]:
         statement = select(Post).where(Post.tweet_language == lang).order_by(Post.tweet_date.desc()).limit(1)
         result = session.scalar(statement)
         return result
+
+
+def update_post(post_id: int, update_block: Callable):
+    with Session(db_engine) as session:
+        statement = select(Post).where(Post.id == post_id)
+        post = session.scalar(statement)
+        if post == None:
+            return
+        
+        update_block(post)
+        session.commit()
 
 
 def insert_post(post: Post):

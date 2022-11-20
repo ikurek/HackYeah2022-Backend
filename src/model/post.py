@@ -2,7 +2,7 @@ from datetime import datetime
 from src.model.base import Base
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
-from sqlalchemy import String, DateTime, Boolean, Float, Integer, LargeBinary
+from sqlalchemy import String, DateTime, Boolean, Float, Integer, LargeBinary, BOOLEAN
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema, auto_field
 from typing import Optional, Any, List, Dict
 
@@ -29,6 +29,7 @@ class Post(Base):
     tweet_embeddings_bin: Mapped[Optional[bytes]] = mapped_column(LargeBinary, nullable=True) 
     fraud_score: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     social_score: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    manually_reviewed: Mapped[Optional[bool]] = mapped_column(BOOLEAN, nullable=True)
 
     def __init__(
             self,
