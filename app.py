@@ -5,7 +5,6 @@ from src.model.score import Score, ScoreSchema
 from src.model.influencer import Influencer, InfluencerSchema
 from datetime import datetime
 
-import datetime
 import os
 from flask import Flask, request
 from typing import Optional
