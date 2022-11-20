@@ -72,7 +72,7 @@ def get_posts_with_keyword(keyword: str, from_date: datetime, to_date: datetime)
 def get_posts_with_smart_search(smart_search_query: str, from_date: datetime, to_date: datetime) -> List[Post]:
     with Session(db_engine) as session:
         posts = get_all_posts(from_date, to_date)
-        smart_search_embeddings = np.array(polish_text_to_embeddings(smart_search_query))
+        smart_search_embeddings = np.array([polish_text_to_embeddings(smart_search_query)])
         embeddings = np.array([post.tweet_embeddings for post in posts])
         similarities = cosine_similarity(smart_search_embeddings, embeddings)
         posts_with_similarities = zip(posts, similarities[0])
