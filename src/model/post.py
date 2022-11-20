@@ -13,7 +13,7 @@ class Post(Base):
     __tablename__ = 'posts'
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     tweet_id: Mapped[int] = mapped_column(Integer, unique=True)
-    tweet_author_id: Mapped[str] = mapped_column(Integer)
+    tweet_author_id: Mapped[int] = mapped_column(Integer)
     tweet_author_username: Mapped[str] = mapped_column(String)
     tweet_author_display_name: Mapped[str] = mapped_column(String)
     tweet_author_is_verified: Mapped[bool] = mapped_column(Boolean)
@@ -33,13 +33,13 @@ class Post(Base):
 
     def __init__(
             self,
-            tweet_author_id: str,
+            tweet_author_id: int,
             tweet_author_username: str,
             tweet_author_display_name: str,
             tweet_author_is_verified: bool,
             tweet_date: datetime,
             tweet_text: str,
-            tweet_id: str,
+            tweet_id: int,
             tweet_like_count: int,
             tweet_reply_count: int,
             tweet_retweet_count: int,

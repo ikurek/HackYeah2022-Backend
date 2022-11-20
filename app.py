@@ -6,8 +6,8 @@ from src.database import init_db
 from src.service import post_service, search_service, image_service, aggregation_service
 from src.model.post import Post, PostSchema
 from src.model.score import Score, ScoreSchema
+from src.model.influencer import Influencer, InfluencerSchema
 from datetime import datetime
-from werkzeug.utils import secure_filename
 
 from typing import Optional
 
@@ -17,6 +17,7 @@ init_db()
 app = Flask(__name__)
 post_schema = PostSchema()
 score_schema = ScoreSchema()
+influencer_schema = InfluencerSchema()
 
 
 @app.after_request
@@ -84,8 +85,9 @@ def sync_tweets(count: Optional[int]):
 
 @app.route('/review/<post_id>')
 def manual_review(post_id: int):
+    args = request.args
     def update_block(post):
-        post.manually_reviewed = True
+        post.manually_reviewed = bool(args.get("value"))
     post_service.update_post(post_id, update_block)
     return ""
 
@@ -100,6 +102,16 @@ def upload_file():
     if file and allowed_image_file(file.filename):
         score = image_service.score_image_file(file)
         return score_schema.dump(score)
+
+    
+@app.route('/finfluencers')
+def get_ranked_finfluencers():
+    args = request.args
+    author_ranking = search_service.get_author_ranking(
+        from_date=read_date(args, 'from_date'),
+        to_date=read_date(args, 'to_date')
+    )
+    return influencer_schema.dump(author_ranking, many=True)
 
 
 def read_date(args, name) -> datetime:
