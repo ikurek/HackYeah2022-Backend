@@ -2,6 +2,7 @@ import datetime
 
 import os
 from flask import Flask, request
+from flask_cors import CORS
 from src.database import init_db
 from src.service import post_service, search_service, image_service
 from src.model.post import Post, PostSchema
@@ -15,6 +16,17 @@ init_db()
 app = Flask(__name__)
 post_schema = PostSchema()
 score_schema = ScoreSchema()
+
+
+@app.after_request
+def apply_caching(response):
+    response.headers['Content-Type'] = "application/json"
+    response.headers['Accept'] = "*/*"
+    response.headers['Access-Control-Allow-Origin'] = "*"
+    response.headers['Access-Control-Allow-Methods'] = "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+    response.headers['Access-Control-Allow-Headers'] = "X-Requested-With,content-type"
+    response.headers['Access-Control-Allow-Credentials'] = "true"
+    return response
 
 
 @app.route('/setup')
@@ -36,8 +48,8 @@ def setup():
 def get_posts():
     args = request.args
     posts = post_service.get_all_posts(
-        from_date=datetime.fromisoformat(args.get('from_date', datetime.min.isoformat())),
-        to_date=datetime.fromisoformat(args.get('to_date', datetime.max.isoformat()))
+        from_date=read_date(args, 'from_date'),
+        to_date=read_date(args, 'to_date')
     )
     return post_schema.dump(posts, many=True)
 
@@ -55,8 +67,8 @@ def search():
         smart_search_query=args.get('smart_search_query', ''),
         keyword=args.get('keyword', ''),
         author_username=args.get('author_username', ''),
-        from_date=datetime.fromisoformat(args.get('from_date', datetime.min.isoformat())),
-        to_date=datetime.fromisoformat(args.get('to_date', datetime.max.isoformat()))
+        from_date=read_date(args, 'from_date'),
+        to_date=read_date(args, 'to_date')
     )
     return post_schema.dump(posts, many=True)
 
@@ -71,6 +83,21 @@ def upload_file():
     if file and allowed_image_file(file.filename):
         score = image_service.score_image_file(file)
         return score_schema.dump(score)
+
+
+def read_date(args, name) -> datetime:
+    try:
+        arg = args.get(name)
+        if arg is None:
+            raise ValueError
+        return datetime.fromisoformat(arg)
+    except ValueError:
+        if name == 'from_date':
+            return datetime.min
+        elif name == 'to_date':
+            return datetime.max
+        else:
+            raise ValueError
 
 
 def allowed_image_file(filename):
