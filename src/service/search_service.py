@@ -2,6 +2,7 @@ from ..database import db_engine
 from ..model.post import Post
 from ..model.influencer import Influencer
 from ..service.post_service import get_all_posts
+from ..ml.language import polish_text_to_embeddings
 
 from datetime import datetime
 from sklearn.metrics.pairwise import cosine_similarity
