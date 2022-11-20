@@ -1,9 +1,8 @@
-from typing import List, Dict
+from typing import List
 
+import numpy as np
 import torch
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
-
-from src.ml.language import PL, translate
 
 MODEL_NAME = "MoritzLaurer/DeBERTa-v3-base-mnli-fever-docnli-ling-2c"
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
@@ -17,21 +16,38 @@ DEFAULT_HYPOTHESIS = (
     "exclamation sentence",
     "Guaranteed result",
     "Become investor",
-    "pension supplement",
     "Extra allowance",
     "Fund company",
-    "Automatic interests",
-    "Safe investment"
+    "Safe investment",
+    "Become milliner",
+    "Luxury cravings",
+    "Trust our offer",
+    "Stable income guaranteed",
+    "A unique chance",
+    "Online investment",
+    "Effortlessly earn money from home",
+    "Investment recommended by financial experts",
+    "All polish citizens",
+    "Constant growth",
+    "Time limited offer"
 )
 
 
 def evaluate_single_hypothesis(text: str, hypothesis: str) -> float:
     """Check if text is close to hypothesis."""
-    text_token = tokenizer(translate(text, PL), hypothesis, truncation=True, return_tensors="pt")
+    text_token = tokenizer(text, hypothesis, truncation=True, return_tensors="pt")
     output = model(text_token["input_ids"].to(device))
     return torch.softmax(output["logits"][0], -1).tolist()[0]
 
 
-def evaluate_multiple_hypothesis(text: str, hypothesis: List[str] = DEFAULT_HYPOTHESIS) -> Dict[str, float]:
+def evaluate_multiple_hypothesis(text: str, hypothesis: List[str] = DEFAULT_HYPOTHESIS) -> float:
     """Check if text is close to multiple hypothesis."""
-    return {single_hypothesis: evaluate_single_hypothesis(text, single_hypothesis) for single_hypothesis in hypothesis}
+    results = [
+        evaluate_single_hypothesis(text, single_hypothesis)
+        for single_hypothesis in hypothesis
+    ]
+    results.sort(reverse=True)
+    return np.round(np.mean(results[:3]), 2)
+
+
+

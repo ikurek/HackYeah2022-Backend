@@ -1,8 +1,8 @@
-from typing import Optional, List, Dict
+from typing import Optional
 
 from ftlangdetect import detect
 from googletrans import Translator
-from transformers import AutoTokenizer, AutoModel, pipeline
+from transformers import AutoTokenizer, AutoModel
 
 SCORES = 'scores'
 ATTENTION_MASK = "attention_mask"
@@ -20,7 +20,6 @@ MIN_LANGUAGE_DETECTION_CONFIDENCE = 0.75
 
 sbert = AutoModel.from_pretrained("Voicelab/sbert-large-cased-pl")
 tokenizer = AutoTokenizer.from_pretrained("Voicelab/sbert-large-cased-pl")
-classifier = pipeline("zero-shot-classification")
 
 
 def get_language(text: str) -> Optional[str]:
@@ -51,13 +50,3 @@ def polish_text_to_embeddings(text: str) -> list[float]:
                        return_tensors='pt')
     x = sbert(tokens[INPUT_IDS], tokens[ATTENTION_MASK]).pooler_output
     return x.tolist()[0]
-
-
-def score_scam_potential(text: str, scam_labels: List[str] = None) -> Dict[str, float]:
-    """
-    Assess scam potential for given text.
-    """
-    if scam_labels is None:
-        scam_labels = list(DEFAULT_SCAM_LABELS)
-    results = classifier(text, scam_labels)
-    return dict(zip(results['labels'], results['scores']))
