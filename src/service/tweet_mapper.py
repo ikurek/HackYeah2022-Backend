@@ -3,6 +3,7 @@ from ..model.post import Post
 from typing import List
 from datetime import datetime
 
+
 def map_twitter_api_tweets(dicts) -> List[Post]:
     posts = []
     for d in dicts:
@@ -13,7 +14,7 @@ def map_twitter_api_tweets(dicts) -> List[Post]:
                 d["author"]["name"],
                 d["author"]["verified"],
                 d["created_at"],
-                d["text"],
+                str(d["text"]),
                 d["id"],
                 d["public_metrics"]["like_count"],
                 d["public_metrics"]["reply_count"],
@@ -28,6 +29,7 @@ def map_twitter_api_tweets(dicts) -> List[Post]:
 
     return posts
 
+
 def map_nitter_api_tweets(dicts) -> List[Post]:
     posts = []
     for d in dicts:
@@ -39,5 +41,5 @@ def map_nitter_api_tweets(dicts) -> List[Post]:
             posts.append(post)
         except:
             pass
-    
+
     return posts

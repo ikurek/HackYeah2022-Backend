@@ -84,5 +84,8 @@ class Post(Base):
 class PostSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = Post
+        exclude = ('tweet_embeddings_bin',)
         include_relationships = True
         load_instance = True
+
+    tweet_text = auto_field()
