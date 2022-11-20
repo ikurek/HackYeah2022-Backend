@@ -73,7 +73,7 @@ class Post(Base):
 
     @property 
     def tweet_embeddings(self) -> List[float]:
-        emb_size = len(self.tweet_embeddings_bin) / 4
+        emb_size = len(self.tweet_embeddings_bin) // 4
         return struct.unpack(f"<{emb_size}f", self.tweet_embeddings_bin)
 
     @tweet_embeddings.setter

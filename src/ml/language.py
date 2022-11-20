@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 from ftlangdetect import detect
 from googletrans import Translator
@@ -39,7 +39,7 @@ def translate(text: str, language: str) -> str:
     return translator.translate(text, LANGUAGE_REVERSE_MAPPER[language]).text
 
 
-def polish_text_to_embeddings(text: str) -> list[float]:
+def polish_text_to_embeddings(text: str) -> List[float]:
     """
     Get embeddings for Polish text.
     """
