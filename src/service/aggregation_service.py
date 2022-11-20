@@ -1,5 +1,6 @@
 from .tweet_mapper import map_twitter_api_tweets
 from .post_service import insert_posts, get_latest_post
+from ..ml.pipeline import process_tweet
 from ..scrapper import TwitterAPI, tweepy_finance_context_query
 
 from multiprocessing import Process
@@ -24,6 +25,9 @@ def data_aggregation_task(language):
         tweets = api.search_tweets(query, exclude_replies=True, exclude_retweets=True, num_results=500, language=language, since=since_datetime)
         posts = map_twitter_api_tweets(tweets)
         print(f"saving {len(posts)} posts")
+
+        for post in posts:
+            post.tweet_embeddings, post.fraud_score = process_tweet(post.tweet_text)
 
         insert_posts(posts)
     except Exception as e:

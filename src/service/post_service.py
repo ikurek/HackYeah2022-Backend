@@ -27,6 +27,7 @@ def get_latest_post(lang: str) -> Optional[Post]:
         result = session.scalar(statement)
         return result
 
+
 def insert_post(post: Post):
     with Session(db_engine) as session:
         session.add(post)
