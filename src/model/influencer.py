@@ -2,7 +2,7 @@ from marshmallow import Schema, fields
 
 
 class Influencer:
-    def __init__(self, id, username: str, name: str, fraud_score: float, social_score: float):
+    def __init__(self, id, username: str, name: str, fraud_score: int, social_score: int):
         self.id = id
         self.username = username
         self.name = name
@@ -17,5 +17,5 @@ class InfluencerSchema(Schema):
     id = fields.Int()
     username = fields.Str()
     name = fields.Str()
-    fraud_score = fields.Float()
-    social_score = fields.Float()
+    fraud_score = fields.Int()
+    social_score = fields.Int()

@@ -59,8 +59,8 @@ def get_author_ranking(from_date: datetime, to_date: datetime) -> List[Influence
                 authors_counts[author_id] = 1
         
         for id, author in authors.items():
-            author.social_score = authors_social_sums[id] / authors_counts[id]
-            author.fraud_score = authors_fraud_sums[id] / authors_counts[id]
+            author.social_score = int(authors_social_sums[id] / authors_counts[id])
+            author.fraud_score = int(authors_fraud_sums[id] / authors_counts[id])
         
         sorted_authors = sorted(authors.values(), key=lambda a: a.social_score, reverse=True)
 

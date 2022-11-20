@@ -9,21 +9,29 @@ from tqdm import tqdm
 import os
 
 
-def data_aggregation_task(language, num_tweets):
+def data_aggregation_task(language, num_tweets, since=None, until=None):
     if "TWITTER_API_BEARER_TOKEN" not in os.environ:
         raise ValueError("TWITTER_API_BEARER_TOKEN environment variable not configured")
     
     try:
-        latest_tweet = get_latest_post(language)
-        since_datetime = None
-        if latest_tweet is not None:
-            since_datetime = latest_tweet.tweet_date
+        if since is None:
+            latest_tweet = get_latest_post(language)
+            if latest_tweet is not None:
+                since = latest_tweet.tweet_date
 
-        print(f"searching tweets with {language} lang, since_datetime: {since_datetime}")
+        print(f"searching tweets with {language} lang, since_datetime: {since}")
 
         api = TwitterAPI(os.environ["TWITTER_API_BEARER_TOKEN"])
         query = tweepy_finance_context_query()
-        tweets = api.search_tweets(query, exclude_replies=True, exclude_retweets=True, num_results=num_tweets, language=language, since=since_datetime)
+        tweets = api.search_tweets(
+            query, 
+            exclude_replies=True,
+            exclude_retweets=True, 
+            num_results=num_tweets, 
+            language=language, 
+            since=since,
+            until=until
+        )
         posts = map_twitter_api_tweets(tweets)
 
         print(f"embedding {len(posts)} posts")
