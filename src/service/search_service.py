@@ -1,13 +1,13 @@
+from ..database import db_engine
+from ..model.post import Post
+from ..model.influencer import Influencer
+from ..service.post_service import get_all_posts
+
 from datetime import datetime
 from sklearn.metrics.pairwise import cosine_similarity
 from sqlalchemy import select, func
 from sqlalchemy.orm import Session
 from typing import List
-
-from src.database import db_engine
-from src.model.post import Post
-from src.model.influencer import Influencer
-from src.service.post_service import get_all_posts
 
 
 def find_posts(

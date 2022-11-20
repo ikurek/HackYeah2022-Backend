@@ -48,6 +48,3 @@ def evaluate_multiple_hypothesis(text: str, hypothesis: List[str] = DEFAULT_HYPO
     ]
     results.sort(reverse=True)
     return int(np.ceil(np.mean(results[:3])*10))
-
-
-

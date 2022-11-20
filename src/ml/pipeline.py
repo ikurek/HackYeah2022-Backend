@@ -1,8 +1,8 @@
 from typing import Tuple, List, Optional
 
-from src.ml.language import get_language, translate, LANGUAGE_REVERSE_MAPPER, polish_text_to_embeddings, PL, EN
-from src.ml.one_shot_classifier import evaluate_multiple_hypothesis
-from src.ml.social_scoring import calculate_social_scoring
+from .language import get_language, translate, LANGUAGE_REVERSE_MAPPER, polish_text_to_embeddings, PL, EN
+from .one_shot_classifier import evaluate_multiple_hypothesis
+from .social_scoring import calculate_social_scoring
 
 
 def process_tweet(text: str, retweet_count: int, like_count: int) -> Optional[Tuple[List[float], float]]:

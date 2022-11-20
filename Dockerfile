@@ -1,9 +1,9 @@
-FROM ubuntu:20.04
+FROM python:3.9
 
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update
-RUN apt-get install -y curl git wget unzip python3 python3-distutils python3-pip
+RUN apt-get install -y curl git wget unzip
 RUN apt-get clean
 
 COPY ./requirements.txt /app/requirements.txt
@@ -13,8 +13,10 @@ RUN pip3 install -r requirements.txt
 
 COPY . /app
 
+RUN python3 cold_run.py
+
 EXPOSE 5000
 
-RUN ["chmod", "+x", "/app/run_docker_server.sh"]
+ENV FLASK_APP=app.py
 
-ENTRYPOINT [ "/app/run_docker_server.sh"]
+CMD ["flask", "run"]

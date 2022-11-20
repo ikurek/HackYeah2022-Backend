@@ -1,7 +1,8 @@
+from ..model.post import Post
+from ..model.influencer import Influencer
+from ..database import db_engine
+
 from typing import List
-from src.model.post import Post
-from src.model.influencer import Influencer
-from src.database import db_engine
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from datetime import datetime

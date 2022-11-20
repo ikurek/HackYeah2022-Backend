@@ -1,7 +1,3 @@
-import datetime
-
-import os
-from flask import Flask, request
 from src.database import init_db
 from src.service import post_service, search_service, image_service, aggregation_service
 from src.model.post import Post, PostSchema
@@ -9,6 +5,9 @@ from src.model.score import Score, ScoreSchema
 from src.model.influencer import Influencer, InfluencerSchema
 from datetime import datetime
 
+import datetime
+import os
+from flask import Flask, request
 from typing import Optional
 
 ALLOWED_IMAGE_FILE_EXTENSIONS = {'png', 'jpg', 'jpeg'}

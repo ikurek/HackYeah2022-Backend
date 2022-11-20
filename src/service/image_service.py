@@ -1,4 +1,4 @@
-from src.model.score import Score
+from ..model.score import Score
 
 
 def score_image_file(file) -> Score:
