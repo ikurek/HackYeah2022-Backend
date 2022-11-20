@@ -8,6 +8,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from sqlalchemy import select, func
 from sqlalchemy.orm import Session
 from typing import List
+import numpy as np
 
 
 def find_posts(
