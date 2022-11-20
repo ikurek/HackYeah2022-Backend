@@ -8,5 +8,5 @@ def calculate_social_scoring(fraud_score: float, retweet_count: int, like_count:
     influence = math.log(influence)
     influence = min(influence, LOGARITHM_MAX_POWER)
 
-    return math.ceil(fraud_score * influence / 4)
+    return math.ceil(fraud_score * influence / (LOGARITHM_MAX_POWER - 1))
 

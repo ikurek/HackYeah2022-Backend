@@ -47,7 +47,7 @@ def evaluate_multiple_hypothesis(text: str, hypothesis: List[str] = DEFAULT_HYPO
         for single_hypothesis in hypothesis
     ]
     results.sort(reverse=True)
-    return np.round(np.mean(results[:3]), 2)
+    return int(np.ceil(np.mean(results[:3])*10))
 
 
 
