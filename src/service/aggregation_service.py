@@ -27,7 +27,9 @@ def data_aggregation_task(language):
         print(f"saving {len(posts)} posts")
 
         for post in posts:
-            post.tweet_embeddings, post.fraud_score = process_tweet(post.tweet_text)
+            result = process_tweet(post.tweet_text)
+            if result is not None:
+                post.tweet_embeddings, post.fraud_score = result
 
         insert_posts(posts)
     except Exception as e:
