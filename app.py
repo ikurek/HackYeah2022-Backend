@@ -4,7 +4,7 @@ import os
 from flask import Flask, request
 from flask_cors import CORS
 from src.database import init_db
-from src.service import post_service, search_service, image_service
+from src.service import post_service, search_service, image_service, aggregation_service
 from src.model.post import Post, PostSchema
 from src.model.score import Score, ScoreSchema
 from datetime import datetime
@@ -71,6 +71,12 @@ def search():
         to_date=read_date(args, 'to_date')
     )
     return post_schema.dump(posts, many=True)
+
+
+@app.route('/sync')
+def sync_tweets():
+    aggregation_service.start_aggregation_task_async()
+    return ""
 
 
 @app.route('/imagescore', methods=['POST'])

@@ -44,7 +44,7 @@ class TwitterAPI:
                 end_time=until,
                 max_results=min(num_results, 100),
                 tweet_fields=["public_metrics", "id", "author_id", "created_at", "lang", "attachments"],
-                user_fields=["name", "username"],
+                user_fields=["name", "username", "verified"],
                 media_fields=["url", "alt_text"],
                 expansions=["attachments.media_keys", "author_id"],
                 next_token=next_token
@@ -52,9 +52,11 @@ class TwitterAPI:
             if len(tweets) == 0:
                 break
 
-            users = includes["users"]
-            media = includes["media"]
-            next_token = page_info["next_token"]
+            users = includes["users"] if "users" in includes else []
+            media = includes["media"] if "media" in includes else []
+            next_token = page_info["next_token"] if "next_token" in page_info else None
+            if next_token is None:
+                break
             tweet_dictionaries = self._parse_tweets(tweets, users, media)
             aggregated_tweets.extend(tweet_dictionaries)
         
@@ -66,7 +68,7 @@ class TwitterAPI:
 
         for tweet_d in tweet_dictionaries:
             author_id = tweet_d["author_id"]
-            if "attachments" in tweet_d:
+            if "attachments" in tweet_d and "media_keys" in tweet_d["attachments"]:
                 keys = [u for u in tweet_d["attachments"]["media_keys"]]
                 media_urls = []
                 # linear search FTW, n^2 complexity, super fast WOW
@@ -80,15 +82,19 @@ class TwitterAPI:
                     except Exception as e:
                         print(f"Media {key} not found: {e}")
                 tweet_d["media_urls"] = media_urls
+            else:
+                tweet_d["media_urls"] = []
             
             try:
                 author = next((u for u in users if u.id == author_id))
                 tweet_d["author"] = {
                     "name": author.name,
-                    "username": author.username
+                    "username": author.username,
+                    "verified": author.verified 
                 }
             except Exception as e:
                 print(f"Users {author_id} not found: {e}")
+                tweet_d["author"] = None
 
         # Me after writing this method:
         # https://bit.ly/2HUmo98
